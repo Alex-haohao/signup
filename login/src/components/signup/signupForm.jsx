@@ -11,7 +11,9 @@ class signupForm extends React.Component{
             password:"",
             passwordConfirmation:"",
             error:{},
-            isloading:false
+            isloading:false,
+            invalid : false,
+
         }
     }
 
@@ -47,16 +49,44 @@ class signupForm extends React.Component{
         )
     }
 
+    checkUserExists = (e)=>{
+        const field = e.target.name;
+        const val = e.target.value;
+        let invalid;
+        if(val !==""){
+            this.props.signupAction.isUserExists(val).then(res =>{
+                let error = this.state.error
+                console.log("lalalalalal");
+                console.log(error);
+                if(res.data[0]){
+                    error[field]= "username is exist: "+ val
+                    invalid =true;
+                }
+                else{
+                    error[field] = ""
+                    invalid = false;
+                }
+                this.setState({
+                    error,
+                    invalid
+                })
+            })
+
+        }
+    }
+
 render(){
 
-    const {error,isloading} = this.state
+    const {error,isloading,invalid} = this.state
     return(
-        <form onSubmit={this.onSubmit}>
+        <form  onSubmit={this.onSubmit}>
             <h1> Signup Here    Join Us</h1>
 
             <div className="form-group">
                 <label className="control-label">UserName: </label>
-                <input type="text" name="username" value={this.state.username}  onChange ={this.onChange}
+                <input type="text" name="username" value={this.state.username}  
+                onChange ={this.onChange}
+                onBlur ={this.checkUserExists}
                 className={classnames("form-control",{'is-invalid':error.username})}  ></input>
                 {error.username && <span className ="form-text text-muted">{error.username}</span>}
             </div>
@@ -83,7 +113,7 @@ render(){
             </div>
 
             <div className="form-group">
-                 <button disabled={isloading} className="btn btn-primary btn-lg">signup</button>
+                 <button disabled={isloading || invalid} className="btn btn-primary btn-lg">signup</button>
             </div>
         </form>
 

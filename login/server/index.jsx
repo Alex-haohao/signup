@@ -3,7 +3,7 @@
     const bodyParser = require('koa-bodyparser')
 
    const users = require("./routers/users")
-
+    const auth = require("./routers/auth")
 
 
 
@@ -18,7 +18,7 @@
   
     
 
-
+    app.use(auth.routes());
     app.use(users.routes());
     app.use(router.allowedMethods());
 

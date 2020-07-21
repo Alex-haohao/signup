@@ -13,8 +13,17 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import routes from './routers'
 import Navgationbar from './components/signup/navigationbar.jsx'
 import FlashMessagesList from './components/flash/flashMessagesList'
+import setAuthorizationToken from './utils/setAuthorizationToken'
+import { setCurrentUser} from './actions/login'
+import jwtDecode from "jwt-decode"
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(logger, thunk)));
+
+if(localStorage.jwtToken){
+  setAuthorizationToken(localStorage.jwtToken);
+  store.dispatch(setCurrentUser(jwtDecode(localStorage.jwtToken)))
+}
+
 
 ReactDOM.render(
 
